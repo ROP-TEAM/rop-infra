@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rop-backend
+  namespace: rop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rop-backend
+  template:
+    metadata:
+      labels:
+        app: rop-backend
+    spec:
+      imagePullSecrets:
+      - name: ghcr-secret
+      containers:
+      - name: rop-backend
+        image: ghcr.io/rop-team/rop-backend:latest
+        env:
+          - name: APP_PORT
+            value: "8080"
+          - name: GOOGLE_CLIENT_ID
+            value: "908298024177-0s6hbc9gapljfa4gm3pnhhmbhg05451t.apps.googleusercontent.com"
+          - name: GOOGLE_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: GOOGLE_CLIENT_SECRET
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: JWT_SECRET
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: cluster-rop-app
+                key: host
+          - name: DB_PORT
+            valueFrom:
+              secretKeyRef:
+                name: cluster-rop-app
+                key: port
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: cluster-rop-app
+                key: user
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: cluster-rop-app
+                key: password
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: cluster-rop-app
+                key: dbname
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rop-backend-service
+  namespace: rop
+spec:
+  selector:
+    app: rop-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
