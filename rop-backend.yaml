@@ -22,7 +22,7 @@ spec:
           - name: APP_PORT
             value: "8080"
           - name: GOOGLE_CLIENT_ID
-            value: "908298024177-0s6hbc9gapljfa4gm3pnhhmbhg05451t.apps.googleusercontent.com"
+            value: "637837812550-7652jqrp9ts1jmgn202liah8tmrbkjd6.apps.googleusercontent.com"
           - name: GOOGLE_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
