@@ -1,0 +1,59 @@
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: rop-frontend
+    namespace: rop
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: rop-frontend
+    template:
+      metadata:
+        labels:
+          app: rop-frontend
+      spec:
+        imagePullSecrets:
+          - name: ghcr-secret 
+        containers:
+          - name: rop-frontend
+            image: ghcr.io/rop-team/rop-frontend:latest #
+            env:
+              - name: PORT
+                value: "3000"
+              - name: HOSTNAME
+                value: "0.0.0.0"
+              # - name: NEXTAUTH_URL
+                # value: "https://www.soroutetion.com" 
+              - name: NEXTAUTH_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: app-secrets
+                    key: NEXTAUTH_SECRET 
+              - name: GOOGLE_CLIENT_ID
+                value: "637837812550-7652jqrp9ts1jmgn202liah8tmrbkjd6.apps.googleusercontent.com"
+              - name: GOOGLE_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: app-secrets
+                    key: GOOGLE_CLIENT_SECRET 
+              - name: JWT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: app-secrets
+                    key: JWT_SECRET
+            ports:
+              - containerPort: 3000
+  ---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: rop-frontend-service
+    namespace: rop
+  spec:
+    selector:
+      app: rop-frontend
+    ports:
+      - protocol: TCP
+        port: 80       
+        targetPort: 3000 

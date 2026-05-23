@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: rop-backend-ingress
+  name: rop-frontend-ingress
   namespace: rop
   annotations:
     kubernetes.io/ingress.class: cloudflare-tunnel-rop
@@ -10,10 +10,10 @@ spec:
   - host: soroutetion.com
     http:
       paths:
-      - path: /api
+      - path: /
         pathType: Prefix
         backend:
           service:
-            name: rop-backend-service
+            name: rop-frontend-service
             port:
               number: 80
